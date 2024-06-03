@@ -1,12 +1,10 @@
 package es.batbatcar.v2p4.modelo.repositories;
 
-import es.batbatcar.v2p4.exceptions.ReservaAlreadyExistsException;
-import es.batbatcar.v2p4.exceptions.ReservaNotFoundException;
-import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
-import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
+import es.batbatcar.v2p4.exceptions.*;
 import es.batbatcar.v2p4.modelo.dao.inmemorydao.InMemoryReservaDAO;
 import es.batbatcar.v2p4.modelo.dao.inmemorydao.InMemoryViajeDAO;
 import es.batbatcar.v2p4.modelo.dto.Reserva;
+import es.batbatcar.v2p4.modelo.dto.viaje.EstadoViaje;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
 import es.batbatcar.v2p4.modelo.dao.interfaces.ReservaDAO;
 import es.batbatcar.v2p4.modelo.dao.interfaces.ViajeDAO;
@@ -117,6 +115,29 @@ public class ViajesRepository {
 			throw new ViajeNotFoundException(destino);
 		}
 		return viajes;
+	}
+
+	public Viaje findViajeSipermiteReserva(int codViaje, String usuario, int plazasSolicitadas ) throws ReservaNoValidaException {
+		Viaje viaje = viajeDAO.findById(codViaje);
+		if (viaje.getPropietario().equals(usuario)){
+			throw new ReservaNoValidaException("El propietario no puede ser igual al usuario");
+		} else if (!viaje.tieneEsteEstado(EstadoViaje.ABIERTO)){
+			throw new ReservaNoValidaException("El viaje no esta disponible");
+		} else if (viaje.isCancelado()){
+			throw new ReservaNoValidaException("El viaje esta cancelado");
+		} else if (viaje.getPlazasOfertadas()<plazasSolicitadas){
+			throw new ReservaNoValidaException("Las plazas no pueden ser mayores a las ofertadas");
+		} else if (findReservasByViaje(viaje).size()<plazasSolicitadas){
+			throw new ReservaNoValidaException("Las plazas solicitadas no pueden ser mayores a las reservas");
+		} else {
+			List <Reserva> reservas = findReservasByViaje(viaje);
+			for (Reserva reserva : reservas) {
+				if (reserva.getUsuario().equals(usuario)){
+					throw new ReservaNoValidaException("El usuario ya ha hecho una reserva en este viaje");
+				}
+			}
+		}
+		return viaje;
 	}
 
 }

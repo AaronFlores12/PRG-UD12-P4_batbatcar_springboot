@@ -1,9 +1,6 @@
 package es.batbatcar.v2p4.controllers;
 
-import es.batbatcar.v2p4.exceptions.ReservaAlreadyExistsException;
-import es.batbatcar.v2p4.exceptions.ReservaNotFoundException;
-import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
-import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
+import es.batbatcar.v2p4.exceptions.*;
 import es.batbatcar.v2p4.modelo.dto.Reserva;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
 import es.batbatcar.v2p4.modelo.repositories.ViajesRepository;
@@ -39,14 +36,17 @@ public class ReservaController {
     @PostMapping(value = "viaje/reserva/add")
     public String addReserva(@RequestParam Map<String, String> params, Model model, RedirectAttributes redirectAttributes) {
         String codViaje = params.get("codViaje");
+        int codViajeInt = Integer.parseInt(codViaje);
+        String usuario = params.get("usuario");
+        String plazas = params.get("plazasSolicitadas");
+        int plazasSolicitadas = Integer.parseInt(plazas);
         try {
-            String usuario = params.get("usuario");
-            String plazas = params.get("plazasSolicitadas");
-            int plazasSolicitadas = Integer.parseInt(plazas);
-            Viaje viaje = viajesRepository.findAll(codViaje);
-            Reserva reserva = new Reserva(codViaje, usuario, plazasSolicitadas, viaje);
-            viajesRepository.save(reserva);
-            redirectAttributes.addFlashAttribute("infoMessage", "Reserva agregada con exito");
+            if (viajesRepository.findViajeSipermiteReserva(codViajeInt, usuario, plazasSolicitadas) != null){
+                Viaje viaje = viajesRepository.findAll(codViaje);
+                Reserva reserva = new Reserva(codViaje, usuario, plazasSolicitadas, viaje);
+                viajesRepository.save(reserva);
+                redirectAttributes.addFlashAttribute("infoMessage", "Reserva agregada con exito");
+            }
             return "redirect:/viajes";
         } catch (ReservaNotFoundException | ReservaAlreadyExistsException | ViajeNotFoundException e) {
             HashMap<String, String> errors = new HashMap<>();
@@ -54,6 +54,8 @@ public class ReservaController {
             redirectAttributes.addFlashAttribute("errors", errors);
             model.addAttribute("codViaje", codViaje);
             return "redirect:/viaje/reserva/add";
+        } catch (ReservaNoValidaException e) {
+            throw new RuntimeException(e);
         }
     }
 
