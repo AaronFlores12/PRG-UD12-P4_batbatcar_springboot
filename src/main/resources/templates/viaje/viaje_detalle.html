@@ -1,1 +1,24 @@
 <!-- Vista para el detalle de un viaje -->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Detalles del Viaje</title>
+</head>
+<body>
+<h1>Detalles del Viaje</h1>
+
+<div th:if="${viaje}">
+    <p><strong>Ruta:</strong> <span th:text="${viaje.ruta}"></span></p>
+    <p><strong>Propietario:</strong> <span th:text="${viaje.propietario}"></span></p>
+    <p><strong>Día de Salida:</strong> <span th:text="${viaje.getFechaDia()}"></span></p>
+    <p><strong>Hora de Salida:</strong> <span th:text="${viaje.getFechaHora()}"></span></p>
+    <p><strong>Plazas Ofertadas:</strong> <span th:text="${viaje.plazasOfertadas}"></span></p>
+    <p><strong>Precio:</strong> <span th:text="${viaje.precio}"></span></p>
+    <p><strong>Duración (en horas):</strong> <span th:text="${viaje.duracion}"></span></p>
+</div>
+
+<a th:href="@{/viajes}">Volver al listado de viajes</a>
+</body>
+</html>

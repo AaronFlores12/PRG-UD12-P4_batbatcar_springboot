@@ -73,4 +73,19 @@ public class ViajesController {
             return "redirect:/viajes";
         }
     }
+
+    @GetMapping("/viaje")
+    public String verViaje(@RequestParam Map<String, String> params, Model model) throws ViajeNotFoundException {
+        try{
+            String codViaje = params.get("codViaje");
+            model.addAttribute("viaje",viajesRepository.findAll(codViaje));
+            return "/viaje/viaje_detalle";
+        } catch (ViajeNotFoundException e) {
+            HashMap<String, String> errors = new HashMap<>();
+            errors.put("error: ","El viaje no existe" + e.getMessage());
+            model.addAttribute("errors", errors);
+            return "redirect:/viajes";
+        }
+    }
+
 }

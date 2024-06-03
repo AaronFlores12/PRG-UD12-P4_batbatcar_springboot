@@ -38,7 +38,7 @@
         </td>
         <td>
             <!-- Enlace genérico de ver detalle de viaje -->
-            <a th:href="@{/viaje/detalle/{codViaje}(codViaje=${viaje.getCodViaje()})}">Ver Detalle</a>
+            <a th:href="@{/viaje(codViaje=${viaje.getCodViaje()})}">Ver Detalle</a>
 
             <!-- Enlace de reservar viaje, solo si el viaje está abierto -->
             <span th:if="${viaje.estaDisponible()}">

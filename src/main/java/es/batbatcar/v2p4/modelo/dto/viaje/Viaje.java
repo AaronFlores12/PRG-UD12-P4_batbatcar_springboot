@@ -2,7 +2,9 @@ package es.batbatcar.v2p4.modelo.dto.viaje;
 
 import es.batbatcar.v2p4.exceptions.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -119,6 +121,14 @@ public class Viaje implements Comparable<Viaje> {
     public String getFechaSalidaFormatted() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return dateTimeFormatter.format(fechaSalida);
+    }
+
+    public LocalDate getFechaDia() {
+        return fechaSalida.toLocalDate();
+    }
+
+    public LocalTime getFechaHora() {
+        return fechaSalida.toLocalTime();
     }
 
     public float getPrecio() {
