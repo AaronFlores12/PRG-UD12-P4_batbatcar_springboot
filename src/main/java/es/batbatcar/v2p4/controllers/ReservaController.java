@@ -57,4 +57,20 @@ public class ReservaController {
         }
     }
 
+    @GetMapping("/viaje/reservas")
+    public String verReservas(@RequestParam Map<String, String> params, Model model) {
+        try{
+            String codViaje = params.get("codViaje");
+            Viaje viaje = viajesRepository.findAll(codViaje);
+            model.addAttribute("reservas", viajesRepository.findReservasByViaje(viaje));
+            model.addAttribute("codViaje", viaje.getCodViaje());
+            return "/reserva/listado";
+        } catch (ViajeNotFoundException e) {
+            HashMap<String, String> errors = new HashMap<>();
+            errors.put("error: ","El viaje no existe" + e.getMessage());
+            model.addAttribute("errors", errors);
+            return "redirect:/viajes";
+        }
+    }
+
 }

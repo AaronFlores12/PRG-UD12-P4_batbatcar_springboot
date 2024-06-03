@@ -1,5 +1,6 @@
 package es.batbatcar.v2p4.controllers;
 
+import es.batbatcar.v2p4.exceptions.ReservaNotFoundException;
 import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
 import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
@@ -30,13 +31,14 @@ public class ViajesController {
      *
      * */
     @GetMapping("viajes")
-    public String getViajesAction(@RequestParam Map<String, String> params, Model model) throws ViajeNotFoundException {
-        String ruta = params.get("ruta");
-        if (ruta != null) {
-            String[] destinos = ruta.split("-");
-            String destinoFinal = destinos[destinos.length - 1];
-            model.addAttribute("viajes", viajesRepository.buscarPorLugarDestino(destinoFinal));
-            model.addAttribute("titulo", "Listado de viajes");
+    public String getViajesAction(@RequestParam Map<String, String> params, Model model) {
+        String destino = params.get("destino");
+        if (destino != null) {
+            try {
+                model.addAttribute("viajes", viajesRepository.buscarPorLugarDestino(destino));
+            } catch (ViajeNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             return "viaje/listado";
         }
         model.addAttribute("viajes", viajesRepository.findAll());
@@ -75,7 +77,7 @@ public class ViajesController {
     }
 
     @GetMapping("/viaje")
-    public String verViaje(@RequestParam Map<String, String> params, Model model) throws ViajeNotFoundException {
+    public String verViaje(@RequestParam Map<String, String> params, Model model) {
         try{
             String codViaje = params.get("codViaje");
             model.addAttribute("viaje",viajesRepository.findAll(codViaje));
@@ -87,5 +89,7 @@ public class ViajesController {
             return "redirect:/viajes";
         }
     }
+
+
 
 }

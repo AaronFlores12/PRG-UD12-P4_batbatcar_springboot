@@ -47,10 +47,16 @@
 
             <!-- Enlace de ver reservas, solo si se han realizado reservas -->
             <span th:if="${viaje.seHanRealizadoReservas}">
-                <a th:href="@{/viaje/add}">Ver reservas</a>
+                <a th:href="@{/viaje/reservas(codViaje=${viaje.getCodViaje()})}">Ver reservas</a>
             </span>
         </td>
     </tr>
 </table>
+
+<!-- Botón para añadir viaje al final -->
+<div class="action-button">
+    <a th:href="@{/viaje/add}" class="btn">Añadir Viaje</a>
+</div>
+
 </body>
 </html>

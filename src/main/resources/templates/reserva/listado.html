@@ -1,1 +1,36 @@
-<!-- Vista para el listado de reservas de un viaje -->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Lista de Reservas</title>
+</head>
+<body>
+<div class="errors" th:if="${errors}">
+    <p th:each="error : ${errors}">
+        <strong th:text="${error.key}"></strong>
+        <span th:text="${error.value}"></span>
+    </p>
+</div>
+<div class="info" th:if="${infoMessage}">
+    <p th:text="${infoMessage}"></p>
+</div>
+<h1>Listado de Reservas a Viaje <span th:text="${codViaje}"></span></h1>
+<form method="get" action="/viaje/reservas"></form>
+<table>
+    <tr>
+        <th>Cod. Reserva</th>
+        <th>Usuario</th>
+        <th>Plazas Solicitadas</th>
+        <th>Fecha y Hora de salida</th>
+    </tr>
+    <tr th:each="reserva : ${reservas}">
+        <td th:text="${reserva.codigoReserva}"></td>
+        <td th:text="${reserva.usuario}"></td>
+        <td th:text="${reserva.plazasSolicitadas}"></td>
+        <td th:text="${#temporals.format(reserva.viaje.fechaSalida, 'dd/MM/yyyy HH:mm')}"></td>
+    </tr>
+</table>
+<a th:href="@{/viajes}" class="button">Volver al listado de viajes</a>
+</body>
+</html>
