@@ -14,6 +14,7 @@ import es.batbatcar.v2p4.modelo.dao.interfaces.ViajeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,14 @@ public class ViajesRepository {
         this.viajeDAO = viajeDAO;
         this.reservaDAO = reservaDAO;
     }
+
+	public Viaje findAll(String codViaje) throws ViajeNotFoundException {
+		Viaje viaje = viajeDAO.findById(Integer.parseInt(codViaje));
+		if (viaje == null ){
+			throw new ViajeNotFoundException(codViaje);
+		}
+		return viaje;
+	}
     
     /** 
      * Obtiene un conjunto de todos los viajes

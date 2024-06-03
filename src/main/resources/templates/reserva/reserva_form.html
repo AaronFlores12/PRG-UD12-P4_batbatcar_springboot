@@ -1,1 +1,25 @@
-<!-- Vista con el formulario de creación de una reserva -->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Insertar Reserva Form</title>
+</head>
+<body>
+<h1>Añadir Reserva a viaje <span th:text="${codViaje}"></span></h1>
+<div class="errors" th:if="${errors}">
+    <p th:each="error : ${errors}">
+        <strong th:text="${error.key}"></strong>
+        <span th:text="${error.value}"></span>
+    </p>
+</div>
+<form th:action="@{/viaje/reserva/add}" method="post">
+    <label>Usuario <input name="usuario" type="text" required></label><br>
+    <input name="codViaje" type="hidden" th:value="${codViaje}">
+    <label>Plazas solicitadas <input name="plazasSolicitadas" type="number" required></label><br>
+    <br>
+    <input type="submit" value="Añadir">
+    <a th:href="@{/viajes}">Volver al listado de viajes</a>
+</form>
+</body>
+</html>

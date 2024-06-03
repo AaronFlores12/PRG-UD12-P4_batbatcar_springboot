@@ -16,6 +16,9 @@
 <div class="section">
     <h3><strong>Listado de Viajes</strong></h3>
 </div>
+<div class="info" th:if="${infoMessage}">
+    <p th:text="${infoMessage}"></p>
+</div>
 <table class="viajes">
     <tr>
         <th>Cod. Viaje</th>

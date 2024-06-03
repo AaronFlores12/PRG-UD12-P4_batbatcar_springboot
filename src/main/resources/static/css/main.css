@@ -106,3 +106,19 @@ table.viajes tr:nth-child(2n) {
     padding: 2px;
     font-size: 12px;
 }
+
+.errors {
+    color: white;
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: red;
+}
+
+.info {
+    color: white;
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+    background-color: green;
+}
