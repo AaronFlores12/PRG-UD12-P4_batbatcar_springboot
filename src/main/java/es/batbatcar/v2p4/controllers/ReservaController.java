@@ -2,6 +2,7 @@ package es.batbatcar.v2p4.controllers;
 
 import es.batbatcar.v2p4.exceptions.ReservaAlreadyExistsException;
 import es.batbatcar.v2p4.exceptions.ReservaNotFoundException;
+import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
 import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
 import es.batbatcar.v2p4.modelo.dto.Reserva;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
