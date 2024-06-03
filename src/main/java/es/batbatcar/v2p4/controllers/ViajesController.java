@@ -30,7 +30,15 @@ public class ViajesController {
      *
      * */
     @GetMapping("viajes")
-    public String getViajesAction(Model model) {
+    public String getViajesAction(@RequestParam Map<String, String> params, Model model) throws ViajeNotFoundException {
+        String ruta = params.get("ruta");
+        if (ruta != null) {
+            String[] destinos = ruta.split("-");
+            String destinoFinal = destinos[destinos.length - 1];
+            model.addAttribute("viajes", viajesRepository.buscarPorLugarDestino(destinoFinal));
+            model.addAttribute("titulo", "Listado de viajes");
+            return "viaje/listado";
+        }
         model.addAttribute("viajes", viajesRepository.findAll());
         model.addAttribute("titulo", "Listado de viajes");
         return "viaje/listado";

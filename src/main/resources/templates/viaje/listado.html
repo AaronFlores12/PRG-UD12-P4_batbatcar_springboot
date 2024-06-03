@@ -1,12 +1,9 @@
-<!-- Vista principal: Listado de viajes -->
-
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/main.css">
-    <title>Title</title>
+    <title>Listado de Viajes</title>
 </head>
 <body>
 <div class="header">
@@ -27,6 +24,7 @@
         <th>Fecha y hora de salida</th>
         <th>Estado</th>
         <th>Reservas</th>
+        <th>Acciones</th>
     </tr>
     <tr th:each="viaje: ${viajes}">
         <td th:text="${viaje.getCodViaje()}"></td>
@@ -36,7 +34,21 @@
         <td th:classappend="${(viaje.estaDisponible()) ? 'abierto':'cerrado'}" th:text="${viaje.getEstado()}"></td>
         <td>
             <span th:if="${viaje.seHanRealizadoReservas}">Sí</span>
-			<span th:unless="${viaje.seHanRealizadoReservas}">No</span>
+            <span th:unless="${viaje.seHanRealizadoReservas}">No</span>
+        </td>
+        <td>
+            <!-- Enlace genérico de ver detalle de viaje -->
+            <a th:href="@{/viaje/detalle/{codViaje}(codViaje=${viaje.getCodViaje()})}">Ver Detalle</a>
+
+            <!-- Enlace de reservar viaje, solo si el viaje está abierto -->
+            <span th:if="${viaje.estaDisponible()}">
+                <a th:href="@{/viaje/reserva/add(codViaje=${viaje.getCodViaje()})}">Reservar</a>
+            </span>
+
+            <!-- Enlace de ver reservas, solo si se han realizado reservas -->
+            <span th:if="${viaje.seHanRealizadoReservas}">
+                <a th:href="@{/viaje/add}">Ver reservas</a>
+            </span>
         </td>
     </tr>
 </table>

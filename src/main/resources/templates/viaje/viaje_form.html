@@ -1,1 +1,47 @@
-<!-- Vista del formulario de inserción de un viaje -->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Añadir Viaje</title>
+</head>
+<body>
+<h1>Añadir Viaje</h1>
+<div class="errors" th:if="${errors}">
+    <p th:each="error : ${errors}">
+        <strong th:text="${error.key}"></strong>
+        <span th:text="${error.value}"></span>
+    </p>
+</div>
+<form th:action="@{/viaje/add}" method="post">
+
+    <input name="codViaje" type="hidden" th:value="${codViaje}">
+
+    <!-- Campo Ruta -->
+    <label>Ruta (Formato: Origen - Destino) <input name="ruta" type="text" required></label><br>
+
+    <!-- Campo Propietario -->
+    <label>Propietario <input name="propietario" type="text" required></label><br>
+
+    <!-- Campo Día de Salida -->
+    <label>Día de Salida <input name="diaSalida" type="date" required></label><br>
+
+    <!-- Campo Hora de Salida -->
+    <label>Hora de Salida <input name="horaSalida" type="time" required></label><br>
+
+    <!-- Campo Plazas Ofertadas -->
+    <label>Plazas Ofertadas <input name="plazasOfertadas" type="number" min="1" max="6" required></label><br>
+
+    <!-- Campo Precio -->
+    <label>Precio <input name="precio" type="number" step="0.01" min="0.01" required></label><br>
+
+    <!-- Campo Duración -->
+    <label>Duración (en horas) <input name="duracion" type="number" min="1" required></label><br>
+
+    <!-- Botón Añadir -->
+    <br>
+    <input type="submit" value="Añadir">
+    <a th:href="@{/viajes}">Volver al listado de viajes</a>
+</form>
+</body>
+</html>
