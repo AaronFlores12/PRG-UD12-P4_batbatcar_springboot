@@ -91,4 +91,5 @@ public class Reserva {
     public int getCodigoViaje() {
         return Integer.parseInt(codigoReserva.split("-")[0]);
     }
+
 }

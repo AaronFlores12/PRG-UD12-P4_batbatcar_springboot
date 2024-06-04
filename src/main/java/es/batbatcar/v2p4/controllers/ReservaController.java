@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -41,16 +42,17 @@ public class ReservaController {
         String plazas = params.get("plazasSolicitadas");
         int plazasSolicitadas = Integer.parseInt(plazas);
         try {
-            if (viajesRepository.findViajeSipermiteReserva(codViajeInt, usuario, plazasSolicitadas) != null){
+            if (viajesRepository.findViajeSipermiteReserva(codViajeInt, usuario, plazasSolicitadas) != null) {
                 Viaje viaje = viajesRepository.findAll(codViaje);
-                Reserva reserva = new Reserva(codViaje, usuario, plazasSolicitadas, viaje);
+                String codigoReserva = String.valueOf(viajesRepository.getNextCodigoReserva(viaje));
+                Reserva reserva = new Reserva(codViaje + "-" + codigoReserva, usuario, plazasSolicitadas, viaje);
                 viajesRepository.save(reserva);
                 redirectAttributes.addFlashAttribute("infoMessage", "Reserva agregada con exito");
             }
             return "redirect:/viajes";
         } catch (ReservaNotFoundException | ReservaAlreadyExistsException | ViajeNotFoundException e) {
             HashMap<String, String> errors = new HashMap<>();
-            errors.put("error: ","La reserva no se ha podido realizar" + e.getMessage());
+            errors.put("error: ", "La reserva no se ha podido realizar" + e.getMessage());
             redirectAttributes.addFlashAttribute("errors", errors);
             model.addAttribute("codViaje", codViaje);
             return "redirect:/viaje/reserva/add";
@@ -58,7 +60,6 @@ public class ReservaController {
             throw new RuntimeException(e);
         }
     }
-
     @GetMapping("/viaje/reservas")
     public String verReservas(@RequestParam Map<String, String> params, Model model) {
         try{

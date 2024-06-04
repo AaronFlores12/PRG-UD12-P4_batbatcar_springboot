@@ -60,6 +60,10 @@ public class ViajesRepository {
     public int getNextCodViaje() {
         return this.viajeDAO.findAll().size() + 1;
     }
+
+	public int getNextCodigoReserva(Viaje viaje) {
+		return this.reservaDAO.findAllByTravel(viaje).size() + 1;
+	}
     
     /**
      * Guarda el viaje (actualiza si ya existe o añade si no existe)
@@ -127,7 +131,7 @@ public class ViajesRepository {
 			throw new ReservaNoValidaException("El viaje esta cancelado");
 		} else if (viaje.getPlazasOfertadas()<plazasSolicitadas){
 			throw new ReservaNoValidaException("Las plazas no pueden ser mayores a las ofertadas");
-		} else if (findReservasByViaje(viaje).size()<plazasSolicitadas){
+		} else if (findReservasByViaje(viaje).size()>plazasSolicitadas){
 			throw new ReservaNoValidaException("Las plazas solicitadas no pueden ser mayores a las reservas");
 		} else {
 			List <Reserva> reservas = findReservasByViaje(viaje);
