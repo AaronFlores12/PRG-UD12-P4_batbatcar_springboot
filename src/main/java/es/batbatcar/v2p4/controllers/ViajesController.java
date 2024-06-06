@@ -61,7 +61,7 @@ public class ViajesController {
             String propietario = params.get("propietario");
             if (!Validator.isValidPropietario(propietario)){
                 errors.put("propietario", "El propietario debe contener nombre y apellidos, ambos con" +
-                        "la primera letra en mayuscula");
+                        " la primera letra en mayuscula");
             }
             String ruta = params.get("ruta");
             if (!Validator.isValidRoute(ruta)){
@@ -88,7 +88,7 @@ public class ViajesController {
             if (!Validator.isPositiveInt(plazasOfertadas)){
                 errors.put("plazasOfertadas","Las plazas ofertadas deben ser positivos");
             }
-            if (errors.isEmpty()){
+            if (!errors.isEmpty()){
                 redirectAttributes.addFlashAttribute("errors", errors);
                 return "redirect:/viaje/add";
             }

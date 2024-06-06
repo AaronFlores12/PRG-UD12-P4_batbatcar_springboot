@@ -22,7 +22,7 @@ public class Validator {
     }
 
     public static boolean isValidPropietario(String propietario) {
-        return isNotEmptyOrNull(propietario) && propietario.matches("^[A-Z][a-zA-Z]\\s[A-Z][a-zA-Z]$");
+        return isNotEmptyOrNull(propietario) && propietario.matches("^[A-Z][a-zA-Z]+\\s[A-Z][a-zA-Z]+$");
     }
 
     public static boolean isPositiveInt(int number) {
