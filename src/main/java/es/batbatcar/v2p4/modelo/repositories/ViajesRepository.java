@@ -113,6 +113,10 @@ public class ViajesRepository {
 		reservaDAO.remove(reserva);
 	}
 
+	public Reserva buscarReserva(String codigoReserva) throws ReservaNotFoundException {
+		return reservaDAO.findById(codigoReserva);
+	}
+
 	public Set<Viaje> buscarPorLugarDestino(String destino) throws ViajeNotFoundException {
 		Set<Viaje> viajes = viajeDAO.findAll(destino);
 		if (viajes.isEmpty()) {

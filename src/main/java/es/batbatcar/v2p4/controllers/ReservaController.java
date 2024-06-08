@@ -76,4 +76,33 @@ public class ReservaController {
         }
     }
 
+    @PostMapping("/viaje/reserva/cancelar")
+    public String cancelarReserva(@RequestParam Map<String, String> params, Model model, RedirectAttributes redirectAttributes) {
+        String codigoReserva = params.get("codigoReserva");
+        try {
+            Reserva reserva = viajesRepository.buscarReserva(codigoReserva);
+            viajesRepository.remove(reserva);
+            redirectAttributes.addFlashAttribute("infoMessage", "Reserva borrada con exito");
+            return "redirect:/viajes";
+        } catch (ReservaNotFoundException e) {
+            HashMap<String, String> errors = new HashMap<>();
+            errors.put("error: ", "El reserva no existe" + e.getMessage());
+            redirectAttributes.addFlashAttribute("errors", errors);
+            return "redirect:/viajes";
+        }
+    }
+
+    @GetMapping("/viaje/reserva/detalle")
+    public String detalleReserva(@RequestParam Map<String, String> params, Model model) {
+        String codigoReserva = params.get("codigoReserva");
+        try {
+            Reserva reserva = viajesRepository.buscarReserva(codigoReserva);
+            model.addAttribute("reserva", reserva);
+            return "/reserva/reserva_detalle";
+        } catch (ReservaNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

@@ -2,7 +2,9 @@ package es.batbatcar.v2p4.controllers;
 
 import es.batbatcar.v2p4.exceptions.ReservaNotFoundException;
 import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
+import es.batbatcar.v2p4.exceptions.ViajeNotCancelableException;
 import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
+import es.batbatcar.v2p4.modelo.dto.Reserva;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
 import es.batbatcar.v2p4.modelo.repositories.ViajesRepository;
 
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -107,7 +110,10 @@ public class ViajesController {
     public String verViaje(@RequestParam Map<String, String> params, Model model) {
         try{
             String codViaje = params.get("codViaje");
+            Viaje viaje = viajesRepository.findAll(codViaje);
+            List<Reserva> reservas = viajesRepository.findReservasByViaje(viaje);
             model.addAttribute("viaje",viajesRepository.findAll(codViaje));
+            model.addAttribute("reservas",reservas);
             return "/viaje/viaje_detalle";
         } catch (ViajeNotFoundException e) {
             HashMap<String, String> errors = new HashMap<>();
@@ -117,6 +123,22 @@ public class ViajesController {
         }
     }
 
-
+    @PostMapping(value ="/viaje/delete")
+    public String deleteViaje(@RequestParam Map<String, String> params, Model model, RedirectAttributes redirectAttributes) {
+        String codViaje = params.get("codViaje");
+        try {
+            Viaje viaje = viajesRepository.findAll(codViaje);
+            if (!viaje.isCancelado()){
+                viaje.cancelar();
+                redirectAttributes.addFlashAttribute("infoMessage", "Viaje cancelado con éxito");
+            }
+            return "redirect:/viajes";
+        } catch (ViajeNotFoundException | ViajeNotCancelableException e) {
+            HashMap<String, String> errors = new HashMap<>();
+            errors.put("error: ","El viaje no existe" + e.getMessage());
+            model.addAttribute("errors", errors);
+            return "redirect:/viajes";
+        }
+    }
 
 }

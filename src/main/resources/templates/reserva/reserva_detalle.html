@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Detalle de la Reserva</title>
+</head>
+<body>
+<div class="header">
+    <img class="icon" src="/images/batbatcar.png">
+    <p class="app-name">Aplicación Bat Bat Car v2</p>
+</div>
+<div class="section">
+    <h3><strong>Detalle de la Reserva</strong></h3>
+</div>
+
+<div th:if="${reserva}">
+    <table class="detalle-reserva">
+        <tr>
+            <th>Código de Reserva</th>
+            <td th:text="${reserva.codigoReserva}"></td>
+        </tr>
+        <tr>
+            <th>Usuario</th>
+            <td th:text="${reserva.usuario}"></td>
+        </tr>
+        <tr>
+            <th>Plazas Solicitadas</th>
+            <td th:text="${reserva.plazasSolicitadas}"></td>
+        </tr>
+        <tr>
+            <th>Fecha y Hora de Salida</th>
+            <td th:text="${#temporals.format(reserva.viaje.fechaSalida, 'dd/MM/yyyy HH:mm')}"></td>
+        </tr>
+    </table>
+</div>
+
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<a th:href="@{/viajes}">Volver al listado de viajes</a>
+</body>
+</html>
