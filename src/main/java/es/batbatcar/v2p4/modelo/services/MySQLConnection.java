@@ -24,8 +24,8 @@ public class MySQLConnection {
 	   
        this.ip = "127.0.0.1";
        this.database = "batbatcar";
-       this.userName = "rhidalgo-web";
-       this.password = "123456789";
+       this.userName = "batoi";
+       this.password = "1234";
    }
    
    public Connection getConnection() {

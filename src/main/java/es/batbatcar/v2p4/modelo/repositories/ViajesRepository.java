@@ -3,6 +3,8 @@ package es.batbatcar.v2p4.modelo.repositories;
 import es.batbatcar.v2p4.exceptions.*;
 import es.batbatcar.v2p4.modelo.dao.inmemorydao.InMemoryReservaDAO;
 import es.batbatcar.v2p4.modelo.dao.inmemorydao.InMemoryViajeDAO;
+import es.batbatcar.v2p4.modelo.dao.sqldao.SQLReservaDAO;
+import es.batbatcar.v2p4.modelo.dao.sqldao.SQLViajeDAO;
 import es.batbatcar.v2p4.modelo.dto.Reserva;
 import es.batbatcar.v2p4.modelo.dto.viaje.EstadoViaje;
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
@@ -22,7 +24,7 @@ public class ViajesRepository {
     private final ViajeDAO viajeDAO;
     private final ReservaDAO reservaDAO;
 
-    public ViajesRepository(@Autowired InMemoryViajeDAO viajeDAO, @Autowired InMemoryReservaDAO reservaDAO) {
+    public ViajesRepository(@Autowired SQLViajeDAO viajeDAO, @Autowired SQLReservaDAO reservaDAO) {
         this.viajeDAO = viajeDAO;
         this.reservaDAO = reservaDAO;
     }
