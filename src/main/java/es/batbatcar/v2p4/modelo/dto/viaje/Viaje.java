@@ -1,11 +1,16 @@
 package es.batbatcar.v2p4.modelo.dto.viaje;
 
 import es.batbatcar.v2p4.exceptions.*;
+import es.batbatcar.v2p4.modelo.dao.interfaces.ReservaDAO;
+import es.batbatcar.v2p4.modelo.dao.interfaces.ViajeDAO;
+import es.batbatcar.v2p4.modelo.dto.Reserva;
+import es.batbatcar.v2p4.modelo.repositories.ViajesRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 public class Viaje implements Comparable<Viaje> {
@@ -26,7 +31,7 @@ public class Viaje implements Comparable<Viaje> {
 
     protected EstadoViaje estadoViaje;
 
-    protected boolean seHanRealizadoReservas;
+    protected int numeroReservas;
 
     public Viaje(int codViaje) {
         this(codViaje, "", "", LocalDateTime.now(), 0, 5f, 4);
@@ -55,16 +60,24 @@ public class Viaje implements Comparable<Viaje> {
         this.duracion = duracion;
         this.precio = precio;
         this.estadoViaje = estadoViaje;
-        this.seHanRealizadoReservas = false;
+        this.numeroReservas = 0;
         setPlazas(plazasOfertadas);
 	}
     
     public boolean isSeHanRealizadoReservas() {
-		return seHanRealizadoReservas;
+		return numeroReservas > 0;
 	}
 
-	public void setSeHanRealizadoReservas(boolean seHanRealizadoReservas) {
-        this.seHanRealizadoReservas = seHanRealizadoReservas;
+    public void setNumeroReservas(int numeroReservas) {
+        this.numeroReservas = numeroReservas;
+    }
+
+    public int getNumeroReservas() {
+        return numeroReservas;
+    }
+
+    public int plazasDisponibles(){
+        return plazasOfertadas - numeroReservas;
     }
 
     public String getTypoString() {

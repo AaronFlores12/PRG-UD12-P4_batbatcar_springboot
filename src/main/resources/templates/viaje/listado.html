@@ -16,6 +16,12 @@
 <div class="info" th:if="${infoMessage}">
     <p th:text="${infoMessage}"></p>
 </div>
+<div class="container">
+    <form method="get" action="viajes">
+        <input type="text" id="search-input" name="destino" placeholder="Introduce destino...">
+        <input class="boton" type="submit" value="Buscar"><br>
+    </form>
+</div>
 <table class="viajes">
     <tr>
         <th>Cod. Viaje</th>
@@ -24,18 +30,22 @@
         <th>Fecha y hora de salida</th>
         <th>Estado</th>
         <th>Reservas</th>
+        <th>Numero de reservas</th>
+        <th>Plazas disponibles</th>
         <th>Acciones</th>
     </tr>
-    <tr th:each="viaje: ${viajes}">
+    <tr th:each="viaje : ${viajes}">
         <td th:text="${viaje.getCodViaje()}"></td>
         <td th:text="${viaje.getRuta()}"></td>
         <td th:text="${viaje.getPropietario()}"></td>
         <td th:text="${#temporals.format(viaje.getFechaSalida(), 'dd-MM-yyyy ''a las'' HH:mm')}"></td>
-        <td th:classappend="${(viaje.estaDisponible()) ? 'abierto':'cerrado'}" th:text="${viaje.getEstado()}"></td>
+        <td th:classappend="${(viaje.estaDisponible()) ? 'abierto' : 'cerrado'}" th:text="${viaje.getEstado()}"></td>
         <td>
             <span th:if="${viaje.seHanRealizadoReservas}">Sí</span>
             <span th:unless="${viaje.seHanRealizadoReservas}">No</span>
         </td>
+            <td th:text="${viaje.numeroReservas}"></td>
+            <td th:text="${viaje.plazasDisponibles()}"></td>
         <td>
             <!-- Enlace genérico de ver detalle de viaje -->
             <a th:href="@{/viaje(codViaje=${viaje.getCodViaje()})}">Ver Detalle</a>
@@ -57,6 +67,5 @@
 <div class="action-button">
     <a th:href="@{/viaje/add}" class="btn">Añadir Viaje</a>
 </div>
-
 </body>
 </html>

@@ -2,6 +2,7 @@ package es.batbatcar.v2p4.modelo.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 import es.batbatcar.v2p4.modelo.dto.viaje.Viaje;
@@ -91,5 +92,4 @@ public class Reserva {
     public int getCodigoViaje() {
         return Integer.parseInt(codigoReserva.split("-")[0]);
     }
-
 }

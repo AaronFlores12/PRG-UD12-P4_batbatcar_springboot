@@ -1,6 +1,5 @@
 package es.batbatcar.v2p4.controllers;
 
-import es.batbatcar.v2p4.exceptions.ReservaNotFoundException;
 import es.batbatcar.v2p4.exceptions.ViajeAlreadyExistsException;
 import es.batbatcar.v2p4.exceptions.ViajeNotCancelableException;
 import es.batbatcar.v2p4.exceptions.ViajeNotFoundException;
@@ -20,22 +19,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class ViajesController {
 
     @Autowired
     private ViajesRepository viajesRepository;
-    
+
     /**
      * Endpoint que muestra el listado de todos los viajes disponibles
-     *
-     * */
+     */
     @GetMapping("viajes")
-    public String getViajesAction(@RequestParam Map<String, String> params, Model model) {
+    public String getViajesAction(@RequestParam (required = false)Map<String, String> params, Model model) {
         String destino = params.get("destino");
         if (destino != null) {
             try {
@@ -44,10 +40,24 @@ public class ViajesController {
                 throw new RuntimeException(e);
             }
             return "viaje/listado";
+
+        } else {
+            Set<Viaje> viajes = viajesRepository.findAll();
+            List<Reserva> reservas = new ArrayList<>();
+            int contador = 0;
+            for (Viaje viaje : viajes) {
+                contador = 0;
+                 reservas = viajesRepository.findReservasByViaje(viaje);
+                 for (Reserva reserva : reservas) {
+                     contador++;
+                 }
+                model.addAttribute("reservas", contador);
+                model.addAttribute("viajes", viajesRepository.findAll());
+            }
+
+
+            return "viaje/listado";
         }
-        model.addAttribute("viajes", viajesRepository.findAll());
-        model.addAttribute("titulo", "Listado de viajes");
-        return "viaje/listado";
     }
 
     @GetMapping("/viaje/add")
@@ -59,48 +69,48 @@ public class ViajesController {
     @PostMapping(value = "/viaje/add")
     public String addViaje(@RequestParam Map<String, String> params, Model model, RedirectAttributes redirectAttributes) {
         HashMap<String, String> errors = new HashMap<>();
-        try{
+        try {
             int codViaje = viajesRepository.getNextCodViaje();
             String propietario = params.get("propietario");
-            if (!Validator.isValidPropietario(propietario)){
+            if (!Validator.isValidPropietario(propietario)) {
                 errors.put("propietario", "El propietario debe contener nombre y apellidos, ambos con" +
                         " la primera letra en mayuscula");
             }
             String ruta = params.get("ruta");
-            if (!Validator.isValidRoute(ruta)){
-                errors.put("ruta","La ruta debe contener el formato 'Origen - Destino'");
+            if (!Validator.isValidRoute(ruta)) {
+                errors.put("ruta", "La ruta debe contener el formato 'Origen - Destino'");
             }
             LocalDate diaSalida = LocalDate.parse(params.get("diaSalida"));
             LocalTime horaSalida = LocalTime.parse(params.get("horaSalida"));
             LocalDateTime fechaSalida = LocalDateTime.of(diaSalida, horaSalida);
-            if (!Validator.isValidDate(String.valueOf(diaSalida))){
-                errors.put("diaSalida","El dia de salida debe tener el formato yyyy-MM-dd");
+            if (!Validator.isValidDate(String.valueOf(diaSalida))) {
+                errors.put("diaSalida", "El dia de salida debe tener el formato yyyy-MM-dd");
             }
-            if (!Validator.isValidTime(String.valueOf(horaSalida))){
-                errors.put("horaSalida","El hora debe tener el formato HH:mm");
+            if (!Validator.isValidTime(String.valueOf(horaSalida))) {
+                errors.put("horaSalida", "El hora debe tener el formato HH:mm");
             }
             long duracion = Long.parseLong(params.get("duracion"));
-            if (!Validator.isPositiveInt((int) duracion)){
-                errors.put("duracion","El duracion debe ser positivo");
+            if (!Validator.isPositiveInt((int) duracion)) {
+                errors.put("duracion", "El duracion debe ser positivo");
             }
             float precio = Float.parseFloat(params.get("precio"));
-            if (!Validator.isPositiveFloat(precio)){
-                errors.put("precio","El precio debe ser positivo");
+            if (!Validator.isPositiveFloat(precio)) {
+                errors.put("precio", "El precio debe ser positivo");
             }
             int plazasOfertadas = Integer.parseInt(params.get("plazasOfertadas"));
-            if (!Validator.isPositiveInt(plazasOfertadas)){
-                errors.put("plazasOfertadas","Las plazas ofertadas deben ser positivos");
+            if (!Validator.isPositiveInt(plazasOfertadas)) {
+                errors.put("plazasOfertadas", "Las plazas ofertadas deben ser positivos");
             }
-            if (!errors.isEmpty()){
+            if (!errors.isEmpty()) {
                 redirectAttributes.addFlashAttribute("errors", errors);
                 return "redirect:/viaje/add";
             }
-            Viaje viaje = new Viaje(codViaje,propietario,ruta,fechaSalida,duracion,precio,plazasOfertadas);
+            Viaje viaje = new Viaje(codViaje, propietario, ruta, fechaSalida, duracion, precio, plazasOfertadas);
             viajesRepository.save(viaje);
             redirectAttributes.addFlashAttribute("infoMessage", "Viaje agregado con exito");
             return "redirect:/viajes";
         } catch (ViajeAlreadyExistsException | ViajeNotFoundException e) {
-            errors.put("error: ","El viaje ya existe" + e.getMessage());
+            errors.put("error: ", "El viaje ya existe" + e.getMessage());
             redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/viajes";
         }
@@ -108,34 +118,34 @@ public class ViajesController {
 
     @GetMapping("/viaje")
     public String verViaje(@RequestParam Map<String, String> params, Model model) {
-        try{
+        try {
             String codViaje = params.get("codViaje");
             Viaje viaje = viajesRepository.findAll(codViaje);
             List<Reserva> reservas = viajesRepository.findReservasByViaje(viaje);
-            model.addAttribute("viaje",viajesRepository.findAll(codViaje));
-            model.addAttribute("reservas",reservas);
+            model.addAttribute("viaje", viajesRepository.findAll(codViaje));
+            model.addAttribute("reservas", reservas);
             return "/viaje/viaje_detalle";
         } catch (ViajeNotFoundException e) {
             HashMap<String, String> errors = new HashMap<>();
-            errors.put("error: ","El viaje no existe" + e.getMessage());
+            errors.put("error: ", "El viaje no existe" + e.getMessage());
             model.addAttribute("errors", errors);
             return "redirect:/viajes";
         }
     }
 
-    @PostMapping(value ="/viaje/delete")
+    @PostMapping(value = "/viaje/delete")
     public String deleteViaje(@RequestParam Map<String, String> params, Model model, RedirectAttributes redirectAttributes) {
         String codViaje = params.get("codViaje");
         try {
             Viaje viaje = viajesRepository.findAll(codViaje);
-            if (!viaje.isCancelado()){
+            if (!viaje.isCancelado()) {
                 viaje.cancelar();
                 redirectAttributes.addFlashAttribute("infoMessage", "Viaje cancelado con éxito");
             }
             return "redirect:/viajes";
         } catch (ViajeNotFoundException | ViajeNotCancelableException e) {
             HashMap<String, String> errors = new HashMap<>();
-            errors.put("error: ","El viaje no existe" + e.getMessage());
+            errors.put("error: ", "El viaje no existe" + e.getMessage());
             model.addAttribute("errors", errors);
             return "redirect:/viajes";
         }

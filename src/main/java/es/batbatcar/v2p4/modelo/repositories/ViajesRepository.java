@@ -46,9 +46,8 @@ public class ViajesRepository {
         
     	// Se completa la información acerca de las reservas de cada viaje a través del DAO de reservas
         for (Viaje viaje : viajes) {
-        	if (this.reservaDAO.findAllByTravel(viaje).size() > 0) {
-            	viaje.setSeHanRealizadoReservas(true);
-            }
+        	List<Reserva> reservas = this.reservaDAO.findAllByTravel(viaje);
+			viaje.setNumeroReservas(reservas.size());
 		}
         return viajes;
     }
@@ -135,7 +134,7 @@ public class ViajesRepository {
 			throw new ReservaNoValidaException("El viaje esta cancelado");
 		} else if (viaje.getPlazasOfertadas()<plazasSolicitadas){
 			throw new ReservaNoValidaException("Las plazas no pueden ser mayores a las ofertadas");
-		} else if (findReservasByViaje(viaje).size()>plazasSolicitadas){
+		} else if (viaje.getPlazasOfertadas() - findReservasByViaje(viaje).size()<plazasSolicitadas){
 			throw new ReservaNoValidaException("Las plazas solicitadas no pueden ser mayores a las reservas");
 		} else {
 			List <Reserva> reservas = findReservasByViaje(viaje);
@@ -147,5 +146,4 @@ public class ViajesRepository {
 		}
 		return viaje;
 	}
-
 }
